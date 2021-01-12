@@ -90,6 +90,18 @@ public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, Meth
             case "volUp":
                 volUp();
                 break;
+            case "nextTrack":
+                nextTrack();
+                break;
+            case "lastTrack":
+                lastTrack();
+                break;
+            case "playTrack":
+                playTrack();
+                break;
+            case "pauseTrack":
+                pauseTrack();
+                break;
             case "orientLandscape":
                 orientLandscape();
                 break;
