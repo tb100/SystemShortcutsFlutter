@@ -35,7 +35,7 @@ public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, Meth
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         channel = new MethodChannel(
-                binding.getBinaryMessenger(), "system_shortcuts");
+            binding.getBinaryMessenger(), "system_shortcuts");
         channel.setMethodCallHandler(this);
     }
 
@@ -131,6 +131,50 @@ public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, Meth
     private void volUp() {
         AudioManager audioManager = (AudioManager) this.activity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
+    }
+
+    private void nextTrack() {
+        AudioManager audioManager = (AudioManager) this.activity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        long eventTime = SystemClock.uptimeMillis();
+
+        KeyEvent downEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+        audioManager.dispatchMediaKeyEvent(downEvent);
+
+        KeyEvent upEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+        audioManager.dispatchMediaKeyEvent(upEvent);
+    }
+
+    private void lastTrack() {
+        AudioManager audioManager = (AudioManager) this.activity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        long eventTime = SystemClock.uptimeMillis();
+
+        KeyEvent downEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+        audioManager.dispatchMediaKeyEvent(downEvent);
+
+        KeyEvent upEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+        audioManager.dispatchMediaKeyEvent(upEvent);
+    }
+
+    private void playTrack() {
+        AudioManager audioManager = (AudioManager) this.activity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        long eventTime = SystemClock.uptimeMillis();
+
+        KeyEvent downEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY, 0);
+        audioManager.dispatchMediaKeyEvent(downEvent);
+
+        KeyEvent upEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY, 0);
+        audioManager.dispatchMediaKeyEvent(upEvent);
+    }
+
+    private void pauseTrack() {
+        AudioManager audioManager = (AudioManager) this.activity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        long eventTime = SystemClock.uptimeMillis();
+
+        KeyEvent downEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE, 0);
+        audioManager.dispatchMediaKeyEvent(downEvent);
+
+        KeyEvent upEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE, 0);
+        audioManager.dispatchMediaKeyEvent(upEvent);
     }
 
     private void orientLandscape() {
