@@ -52,6 +52,42 @@ class SystemShortcuts {
   static Future<Null> volUp() async {
     await _channel.invokeMethod('volUp');
   }
+  
+  /// Press Next Track button programatically .
+  ///
+  /// Implemetation :-
+  ///
+  /// await SystemShortcuts.volDown ( );
+  static Future<Null> nextTrack() async {
+    await _channel.invokeMethod('nextTrack');
+  }
+
+  /// Press Last Track button programatically .
+  ///
+  /// Implemetation :-
+  ///
+  /// await SystemShortcuts.volUp ( );
+  static Future<Null> lastTrack() async {
+    await _channel.invokeMethod('lastTrack');
+  }
+  
+  /// Press Play Track button programatically .
+  ///
+  /// Implemetation :-
+  ///
+  /// await SystemShortcuts.volUp ( );
+  static Future<Null> playTrack() async {
+    await _channel.invokeMethod('playTrack');
+  }
+  
+  /// Press Pause Track button programatically .
+  ///
+  /// Implemetation :-
+  ///
+  /// await SystemShortcuts.volDown ( );
+  static Future<Null> pauseTrack() async {
+    await _channel.invokeMethod('pauseTrack');
+  }
 
   /// Change app orientation to landscape mode
   ///
