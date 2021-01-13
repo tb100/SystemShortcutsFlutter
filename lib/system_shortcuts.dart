@@ -16,6 +16,24 @@ import 'package:flutter/services.dart';
 /// functions respectively
 class SystemShortcuts {
   static const MethodChannel _channel = const MethodChannel('system_shortcuts');
+  static const EventChannel _event = const EventChannel('system_shortcuts');
+
+  Stream _mediaStream;
+
+  Map _mediaEvent(dynamic data) {
+    return data;
+  }
+
+  Stream get notificationStream {
+    if (Platform.isAndroid) {
+      if (_mediaStream == null) {
+        _mediaStream =
+            _event.receiveBroadcastStream().map((event) => _mediaEvent(event));
+      }
+      return _mediaStream;
+    }
+    throw ('Media API exclusively available on Android!');
+  }
 
   /// Press home button programatically .
   ///
@@ -52,7 +70,7 @@ class SystemShortcuts {
   static Future<Null> volUp() async {
     await _channel.invokeMethod('volUp');
   }
-  
+
   /// Press Next Track button programatically .
   ///
   /// Implemetation :-
@@ -70,7 +88,7 @@ class SystemShortcuts {
   static Future<Null> lastTrack() async {
     await _channel.invokeMethod('lastTrack');
   }
-  
+
   /// Press Play Track button programatically .
   ///
   /// Implemetation :-
@@ -79,7 +97,7 @@ class SystemShortcuts {
   static Future<Null> playTrack() async {
     await _channel.invokeMethod('playTrack');
   }
-  
+
   /// Press Pause Track button programatically .
   ///
   /// Implemetation :-
