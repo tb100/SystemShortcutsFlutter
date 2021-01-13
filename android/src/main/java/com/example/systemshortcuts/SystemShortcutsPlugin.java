@@ -30,6 +30,10 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private MethodChannel channel;
     private Activity activity;
+    private EventSink eventSync;
+    
+
+    public static final String SERVICECMD = "com.android.music.musicservicecommand";
 
     /**
      * v2 plugin embedding
@@ -66,6 +70,47 @@ public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, Meth
     public void onDetachedFromActivityForConfigChanges() {
         activity = null;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        IntentFilter iF = new IntentFilter();
+        iF.addAction("com.android.music.metachanged");
+        iF.addAction("com.android.music.playstatechanged");
+        iF.addAction("com.android.music.playbackcomplete");
+        iF.addAction("com.android.music.queuechanged");
+        iF.addAction("com.android.music.metachanged");
+        iF.addAction("com.htc.music.metachanged");
+        iF.addAction("fm.last.android.metachanged");
+        iF.addAction("com.sec.android.app.music.metachanged");
+        iF.addAction("com.nullsoft.winamp.metachanged");
+        iF.addAction("com.amazon.mp3.metachanged");     
+        iF.addAction("com.miui.player.metachanged");        
+        iF.addAction("com.real.IMP.metachanged");
+        iF.addAction("com.sonyericsson.music.metachanged");
+        iF.addAction("com.rdio.android.metachanged");
+        iF.addAction("com.samsung.sec.android.MusicPlayer.metachanged");
+        iF.addAction("com.andrew.apollo.metachanged");
+
+        registerReceiver(mReceiver, iF);
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String cmd = intent.getStringExtra("command");
+            Log.v("tag ", action + " / " + cmd);
+            String artist = intent.getStringExtra("artist");
+            String album = intent.getStringExtra("album");
+            String track = intent.getStringExtra("track");
+            Log.v("tag", artist + ":" + album + ":" + track);
+            Toast.makeText(SystemShortcutsPlugin.this, track, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     /**
      * Plugin registration.
