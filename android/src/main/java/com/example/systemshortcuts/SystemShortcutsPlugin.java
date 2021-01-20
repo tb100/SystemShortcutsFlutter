@@ -23,6 +23,7 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.flutter.plugin.common.EventChannel;
 
 /**
  * SystemShortcutsPlugin
@@ -30,7 +31,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private MethodChannel channel;
     private Activity activity;
-    private EventSink eventSync;
+    private EventChannel.EventSink eventChannel;
     
 
     public static final String SERVICECMD = "com.android.music.musicservicecommand";
@@ -71,10 +72,33 @@ public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, Meth
         activity = null;
     }
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String cmd = intent.getStringExtra("command");
+            Log.v("tag ", action + " / " + cmd);
+            String artist = intent.getStringExtra("artist");
+            String album = intent.getStringExtra("album");
+            String track = intent.getStringExtra("track");
+            Log.v("tag", artist + ":" + album + ":" + track);
+
+            HashMap map = new HashMap<String, Any>();
+            map["artist"] = artist;
+            map["album"] = album;
+            map["track"] = track;
+            map["command"] = command;
+
+            if(eventChannel != null){
+                eventChannel.success(map);
+            }
+        }
+    };
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+    public void onListen(Object o, EventChannel.EventSink eventSink) {
+        eventChannel = eventSink;
 
         IntentFilter iF = new IntentFilter();
         iF.addAction("com.android.music.metachanged");
@@ -95,22 +119,14 @@ public class SystemShortcutsPlugin implements FlutterPlugin, ActivityAware, Meth
         iF.addAction("com.andrew.apollo.metachanged");
 
         registerReceiver(mReceiver, iF);
+
+
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            String cmd = intent.getStringExtra("command");
-            Log.v("tag ", action + " / " + cmd);
-            String artist = intent.getStringExtra("artist");
-            String album = intent.getStringExtra("album");
-            String track = intent.getStringExtra("track");
-            Log.v("tag", artist + ":" + album + ":" + track);
-            Toast.makeText(SystemShortcutsPlugin.this, track, Toast.LENGTH_SHORT).show();
-        }
-    };
+    @Override
+    public void onCancel(Object o) {
+        eventChannel = null;
+    }
 
     /**
      * Plugin registration.
